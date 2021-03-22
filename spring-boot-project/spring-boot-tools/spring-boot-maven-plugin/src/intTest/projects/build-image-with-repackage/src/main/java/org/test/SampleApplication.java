@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package org.springframework.boot.env;
+package org.test;
 
-/**
- * Interface that can be implemented by a
- * {@link org.springframework.core.env.PropertySource} that can be used with a prefix.
- *
- * @author Madhura Bhave
- * @since 2.5.0
- */
-@FunctionalInterface
-public interface Prefixed {
+public class SampleApplication {
 
-	String getPrefix();
+	public static void main(String[] args) throws Exception {
+		System.out.println("Launched");
+		synchronized(args) {
+			args.wait(); // Prevent exit"
+		}
+	}
 
 }

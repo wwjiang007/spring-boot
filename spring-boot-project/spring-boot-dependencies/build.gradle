@@ -1002,7 +1002,7 @@ bom {
 			]
 		}
 	}
-	library("Lettuce", "6.1.0.M1") {
+	library("Lettuce", "6.1.0.RC1") {
 		group("io.lettuce") {
 			modules = [
 				"lettuce-core"
@@ -1178,7 +1178,7 @@ bom {
 			]
 		}
 	}
-	library("Micrometer", "1.6.5") {
+	library("Micrometer", "1.7.0-M1") {
 		group("io.micrometer") {
 			modules = [
 				"micrometer-registry-stackdriver" {
@@ -1601,7 +1601,7 @@ bom {
 			]
 		}
 	}
-	library("Spring AMQP", "2.3.5") {
+	library("Spring AMQP", "2.3.6") {
 		group("org.springframework.amqp") {
 			modules = [
 				"spring-amqp",
@@ -1611,7 +1611,7 @@ bom {
 			]
 		}
 	}
-	library("Spring Batch", "4.3.2-SNAPSHOT") {
+	library("Spring Batch", "4.3.2") {
 		group("org.springframework.batch") {
 			modules = [
 				"spring-batch-core",
@@ -1621,7 +1621,7 @@ bom {
 			]
 		}
 	}
-	library("Spring Data Bom", "2021.0.0-SNAPSHOT") {
+	library("Spring Data Bom", "2021.0.0-M5") {
 		group("org.springframework.data") {
 			imports = [
 				"spring-data-bom"
@@ -1642,14 +1642,14 @@ bom {
 			]
 		}
 	}
-	library("Spring Integration", "5.5.0-SNAPSHOT") {
+	library("Spring Integration", "5.5.0-M3") {
 		group("org.springframework.integration") {
 			imports = [
 				"spring-integration-bom"
 			]
 		}
 	}
-	library("Spring Kafka", "2.7.0-SNAPSHOT") {
+	library("Spring Kafka", "2.7.0-RC1") {
 		group("org.springframework.kafka") {
 			modules = [
 				"spring-kafka",

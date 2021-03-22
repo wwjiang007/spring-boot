@@ -74,17 +74,30 @@ public abstract class Packager {
 
 	private String mainClass;
 
-	protected File source;
+	private final File source;
 
 	private Layout layout;
 
-	protected LayoutFactory layoutFactory;
+	private LayoutFactory layoutFactory;
 
 	private Layers layers;
 
 	private LayersIndex layersIndex;
 
 	private boolean includeRelevantJarModeJars = true;
+
+	/**
+	 * Create a new {@link Packager} instance.
+	 * @param source the source JAR file to package
+	 * @param layoutFactory the layout factory to use or {@code null}
+	 */
+	protected Packager(File source, LayoutFactory layoutFactory) {
+		Assert.notNull(source, "Source file must not be null");
+		Assert.isTrue(source.exists() && source.isFile(),
+				() -> "Source must refer to an existing file, got " + source.getAbsolutePath());
+		this.source = source.getAbsoluteFile();
+		this.layoutFactory = layoutFactory;
+	}
 
 	/**
 	 * Add a listener that will be triggered to display a warning if searching for the

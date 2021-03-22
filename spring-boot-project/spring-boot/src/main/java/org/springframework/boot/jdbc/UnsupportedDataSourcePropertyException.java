@@ -14,7 +14,27 @@
  * limitations under the License.
  */
 
+package org.springframework.boot.jdbc;
+
+import java.util.function.Supplier;
+
 /**
- * General infrastructure for {@code DataSource} initialization.
+ * {@link RuntimeException} thrown from {@link DataSourceBuilder} when an unsupported
+ * property is used.
+ *
+ * @author Phillip Webb
+ * @since 2.5.0
  */
-package org.springframework.boot.jdbc.init;
+public class UnsupportedDataSourcePropertyException extends RuntimeException {
+
+	UnsupportedDataSourcePropertyException(String message) {
+		super(message);
+	}
+
+	static void throwIf(boolean test, Supplier<String> message) {
+		if (test) {
+			throw new UnsupportedDataSourcePropertyException(message.get());
+		}
+	}
+
+}

@@ -25,7 +25,10 @@ import org.springframework.util.ClassUtils;
  * @author Mark Paluch
  * @author Stephane Nicoll
  * @since 2.3.0
+ * @deprecated since 2.5.0 in favor of
+ * {@link org.springframework.boot.r2dbc.EmbeddedDatabaseConnection}
  */
+@Deprecated
 public enum EmbeddedDatabaseConnection {
 
 	/**

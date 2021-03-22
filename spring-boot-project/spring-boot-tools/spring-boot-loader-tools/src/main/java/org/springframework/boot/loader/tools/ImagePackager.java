@@ -38,14 +38,11 @@ public class ImagePackager extends Packager {
 	 * @param source the source file to package
 	 */
 	public ImagePackager(File source) {
-		Assert.notNull(source, "Source file must not be null");
-		this.source = source.getAbsoluteFile();
+		super(source, null);
 		if (isAlreadyPackaged()) {
-			this.source = getBackupFile();
+			Assert.isTrue(getBackupFile().exists() && getBackupFile().isFile(),
+					"Original source '" + getBackupFile() + "' is required for building an image");
 		}
-		Assert.isTrue(this.source.exists() && this.source.isFile(),
-				"Source '" + this.source + "' must refer to an existing file");
-		Assert.state(!isAlreadyPackaged(), () -> "Repackaged archive file " + getSource() + " cannot be exported");
 	}
 
 	/**
@@ -59,7 +56,10 @@ public class ImagePackager extends Packager {
 	}
 
 	private void packageImage(Libraries libraries, AbstractJarWriter writer) throws IOException {
-		try (JarFile sourceJar = new JarFile(getSource())) {
+		File source = isAlreadyPackaged() ? getBackupFile() : getSource();
+		Assert.state(!isAlreadyPackaged(source),
+				() -> "Repackaged archive file " + source + " cannot be used to build an image");
+		try (JarFile sourceJar = new JarFile(source)) {
 			write(sourceJar, libraries, writer);
 		}
 	}
