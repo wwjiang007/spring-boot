@@ -32,8 +32,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.actuate.endpoint.InvalidEndpointRequestException;
 import org.springframework.boot.actuate.endpoint.InvocationContext;
+import org.springframework.boot.actuate.endpoint.ProducibleOperationArgumentResolver;
 import org.springframework.boot.actuate.endpoint.SecurityContext;
-import org.springframework.boot.actuate.endpoint.http.ProducibleOperationArgumentResolver;
 import org.springframework.boot.actuate.endpoint.invoke.OperationInvoker;
 import org.springframework.boot.actuate.endpoint.web.EndpointMapping;
 import org.springframework.boot.actuate.endpoint.web.EndpointMediaTypes;
@@ -54,9 +54,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.MatchableHandlerMapping;
 import org.springframework.web.servlet.handler.RequestMatchResult;
@@ -287,11 +287,11 @@ public abstract class AbstractWebMvcEndpointHandlerMapping extends RequestMappin
 			try {
 				ServletSecurityContext securityContext = new ServletSecurityContext(request);
 				InvocationContext invocationContext = new InvocationContext(securityContext, arguments,
-						new ProducibleOperationArgumentResolver(headers));
+						new ProducibleOperationArgumentResolver(() -> headers.get("Accept")));
 				return handleResult(this.operation.invoke(invocationContext), HttpMethod.resolve(request.getMethod()));
 			}
 			catch (InvalidEndpointRequestException ex) {
-				throw new BadOperationRequestException(ex.getReason());
+				throw new InvalidEndpointBadRequestException(ex);
 			}
 		}
 
@@ -404,11 +404,14 @@ public abstract class AbstractWebMvcEndpointHandlerMapping extends RequestMappin
 
 	}
 
-	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
-	private static class BadOperationRequestException extends RuntimeException {
+	/**
+	 * Nested exception used to wrap an {@link InvalidEndpointRequestException} and
+	 * provide a {@link HttpStatus#BAD_REQUEST} status.
+	 */
+	private static class InvalidEndpointBadRequestException extends ResponseStatusException {
 
-		BadOperationRequestException(String message) {
-			super(message);
+		InvalidEndpointBadRequestException(InvalidEndpointRequestException cause) {
+			super(HttpStatus.BAD_REQUEST, cause.getReason(), cause);
 		}
 
 	}

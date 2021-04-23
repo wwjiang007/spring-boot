@@ -43,7 +43,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.jdbc.DatabaseDriver;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.jdbc.init.dependency.DependsOnDataSourceInitialization;
+import org.springframework.boot.jdbc.init.DataSourceScriptDatabaseInitializer;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -67,8 +68,7 @@ class DataSourceAutoConfigurationTests {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(DataSourceAutoConfiguration.class))
-			.withPropertyValues("spring.datasource.initialization-mode=never",
-					"spring.datasource.url:jdbc:hsqldb:mem:testdb-" + new Random().nextInt());
+			.withPropertyValues("spring.datasource.url:jdbc:hsqldb:mem:testdb-" + new Random().nextInt());
 
 	@Test
 	void testDefaultDataSourceExists() {
@@ -236,11 +236,19 @@ class DataSourceAutoConfigurationTests {
 	}
 
 	@Test
+	@Deprecated
 	void testDataSourceIsInitializedEarly() {
 		this.contextRunner.withUserConfiguration(TestInitializedDataSourceConfiguration.class)
-				.withPropertyValues("spring.datasource.initialization-mode=always")
-				.run((context) -> assertThat(context.getBean(TestInitializedDataSourceConfiguration.class).called)
-						.isTrue());
+				.withPropertyValues("spring.datasource.initialization-mode=always").run((context) -> {
+					assertThat(context).hasSingleBean(DataSourceScriptDatabaseInitializer.class);
+					assertThat(context.getBean(TestInitializedDataSourceConfiguration.class).called).isTrue();
+				});
+	}
+
+	@Test
+	void whenNoInitializationRelatedSpringDataSourcePropertiesAreConfiguredThenInitializationBacksOff() {
+		this.contextRunner
+				.run((context) -> assertThat(context).doesNotHaveBean(DataSourceScriptDatabaseInitializer.class));
 	}
 
 	private static Function<ApplicationContextRunner, ApplicationContextRunner> hideConnectionPools() {
@@ -275,7 +283,7 @@ class DataSourceAutoConfigurationTests {
 	}
 
 	@Configuration(proxyBeanMethods = false)
-	@DependsOnDataSourceInitialization
+	@DependsOnDatabaseInitialization
 	static class TestInitializedDataSourceConfiguration {
 
 		private boolean called;

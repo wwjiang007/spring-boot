@@ -9,6 +9,12 @@ plugins {
 
 description = "Spring Boot"
 
+def tomcatConfigProperties = "$buildDir/tomcat-config-properties"
+
+configurations {
+	tomcatDistribution
+}
+
 dependencies {
 	annotationProcessor("org.apache.logging.log4j:log4j-core")
 
@@ -29,6 +35,7 @@ dependencies {
 	optional("io.netty:netty-tcnative-boringssl-static")
 	optional("io.projectreactor:reactor-tools")
 	optional("io.projectreactor.netty:reactor-netty-http")
+	optional("io.r2dbc:r2dbc-pool")
 	optional("io.rsocket:rsocket-core")
 	optional("io.rsocket:rsocket-transport-netty")
 	optional("io.undertow:undertow-servlet") {
@@ -40,6 +47,7 @@ dependencies {
 	optional("junit:junit")
 	optional("org.apache.commons:commons-dbcp2")
 	optional("org.apache.httpcomponents:httpclient")
+	optional("org.apache.httpcomponents.client5:httpclient5")
 	optional("org.apache.logging.log4j:log4j-api")
 	optional("org.apache.logging.log4j:log4j-core")
 	optional("org.apache.tomcat.embed:tomcat-embed-core")
@@ -66,7 +74,7 @@ dependencies {
 	optional("org.springframework:spring-messaging")
 	optional("org.springframework:spring-orm")
 	optional("org.springframework:spring-oxm")
-    optional("org.springframework:spring-r2dbc")
+	optional("org.springframework:spring-r2dbc")
 	optional("org.springframework:spring-test")
 	optional("org.springframework:spring-web")
 	optional("org.springframework:spring-webflux")
@@ -85,13 +93,15 @@ dependencies {
 	testImplementation("com.squareup.okhttp3:okhttp")
 	testImplementation("com.sun.xml.messaging.saaj:saaj-impl")
 	testImplementation("io.projectreactor:reactor-test")
-    testImplementation("io.r2dbc:r2dbc-h2")
+	testImplementation("io.r2dbc:r2dbc-h2")
 	testImplementation("javax.xml.ws:jaxws-api")
 	testImplementation("mysql:mysql-connector-java")
 	testImplementation("net.sourceforge.jtds:jtds")
 	testImplementation("org.apache.derby:derby")
-	testImplementation("org.apache.httpcomponents:httpasyncclient")
 	testImplementation("org.awaitility:awaitility")
+	testImplementation("org.eclipse.jetty:jetty-client")
+	testImplementation("org.eclipse.jetty.http2:http2-client")
+	testImplementation("org.eclipse.jetty.http2:http2-http-client-transport")
 	testImplementation("org.firebirdsql.jdbc:jaybird-jdk18")
 	testImplementation("org.hsqldb:hsqldb")
 	testImplementation("org.junit.jupiter:junit-jupiter")
@@ -106,6 +116,23 @@ dependencies {
 	testRuntimeOnly("org.testcontainers:jdbc") {
 		exclude group: "javax.annotation", module: "javax.annotation-api"
 		exclude group: "javax.xml.bind", module: "jaxb-api"
+	}
+
+	tomcatDistribution("org.apache.tomcat:tomcat:${tomcatVersion}@zip")
+}
+
+task extractTomcatConfigProperties(type: Sync) {
+	destinationDir = file(tomcatConfigProperties)
+	from {
+		zipTree(configurations.tomcatDistribution.incoming.files.singleFile).matching {
+			include '**/conf/catalina.properties'
+		}.singleFile
+	}
+}
+
+sourceSets {
+	test {
+		output.dir(tomcatConfigProperties, builtBy: "extractTomcatConfigProperties")
 	}
 }
 
