@@ -29,6 +29,7 @@ import org.asciidoctor.gradle.jvm.AsciidoctorTask;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.Sync;
 
 import org.springframework.boot.build.artifactory.ArtifactoryRepository;
@@ -96,7 +97,7 @@ class AsciidoctorConventions {
 		ConfigurationContainer configurations = project.getConfigurations();
 		Configuration asciidoctorExtensions = configurations.maybeCreate(EXTENSIONS_CONFIGURATION);
 		asciidoctorExtensions.getDependencies().add(project.getDependencies()
-				.create("io.spring.asciidoctor.backends:spring-asciidoctor-backends:0.0.1-M1"));
+				.create("io.spring.asciidoctor.backends:spring-asciidoctor-backends:0.0.1-SNAPSHOT"));
 		Configuration dependencyManagement = configurations.findByName("dependencyManagement");
 		if (dependencyManagement != null) {
 			asciidoctorExtensions.extendsFrom(dependencyManagement);
@@ -125,7 +126,7 @@ class AsciidoctorConventions {
 
 	private String determineGitHubTag(Project project) {
 		String version = "v" + project.getVersion();
-		return (version.endsWith("-SNAPSHOT")) ? "master" : version;
+		return (version.endsWith("-SNAPSHOT")) ? "main" : version;
 	}
 
 	private void configureOptions(AbstractAsciidoctorTask asciidoctorTask) {
@@ -139,7 +140,8 @@ class AsciidoctorConventions {
 		syncDocumentationSource.setDestinationDir(syncedSource);
 		syncDocumentationSource.from("src/docs/");
 		asciidoctorTask.dependsOn(syncDocumentationSource);
-		asciidoctorTask.getInputs().dir(syncedSource);
+		asciidoctorTask.getInputs().dir(syncedSource).withPathSensitivity(PathSensitivity.RELATIVE)
+				.withPropertyName("synced source");
 		asciidoctorTask.setSourceDir(project.relativePath(new File(syncedSource, "asciidoc/")));
 		return syncDocumentationSource;
 	}
