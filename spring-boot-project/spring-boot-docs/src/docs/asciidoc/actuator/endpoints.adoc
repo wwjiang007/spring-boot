@@ -98,6 +98,7 @@ If your application is a web application (Spring MVC, Spring WebFlux, or Jersey)
 
 | `heapdump`
 | Returns an `hprof` heap dump file.
+  Requires a HotSpot JVM.
 
 | `jolokia`
 | Exposes JMX beans over HTTP (when Jolokia is on the classpath, not available for WebFlux).
@@ -791,17 +792,17 @@ The following table shows the default status mappings for the built-in statuses:
 |===
 | Status | Mapping
 
-| DOWN
-| SERVICE_UNAVAILABLE (503)
+| `DOWN`
+| `SERVICE_UNAVAILABLE` (`503`)
 
-| OUT_OF_SERVICE
-| SERVICE_UNAVAILABLE (503)
+| `OUT_OF_SERVICE`
+| `SERVICE_UNAVAILABLE` (`503`)
 
-| UP
-| No mapping by default, so http status is 200
+| `UP`
+| No mapping by default, so HTTP status is `200`
 
-| UNKNOWN
-| No mapping by default, so http status is 200
+| `UNKNOWN`
+| No mapping by default, so HTTP status is `200`
 |===
 
 
