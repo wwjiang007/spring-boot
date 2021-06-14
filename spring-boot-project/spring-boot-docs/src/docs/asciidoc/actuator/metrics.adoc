@@ -554,7 +554,7 @@ In most situations, the out-of-the-box defaults will provide sensible metrics th
 [[actuator.metrics.supported.jvm]]
 ==== JVM Metrics
 Auto-configuration will enable JVM Metrics using core Micrometer classes.
-JVM metrics are published under the `jvm.` meter name.
+JVM metrics are published under the `jvm.` and `disk.` meter names.
 
 The following JVM metrics are provided:
 
@@ -562,6 +562,7 @@ The following JVM metrics are provided:
 * Statistics related to garbage collection
 * Threads utilization
 * The Number of classes loaded/unloaded
+* Disk space available
 
 
 
@@ -582,6 +583,13 @@ The following system metrics are provided:
 ==== Logger Metrics
 Auto-configuration enables the event metrics for both Logback and Log4J2.
 Details are published under the `log4j2.events.` or `logback.events.` meter names.
+
+
+
+[[actuator.metrics.supported.tasks]]
+==== Task Execution and Scheduling Metrics
+Auto-configuration enables the instrumentation of all available `ThreadPoolTaskExecutor` and `ThreadPoolTaskScheduler` beans, as long as the underling `ThreadPoolExecutor` is available.
+Metrics are tagged by the name of the executor that is derived from the bean name.
 
 
 

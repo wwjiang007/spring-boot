@@ -20,11 +20,14 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationContextFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringApplicationShutdownHookInstance;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -40,6 +43,7 @@ import org.springframework.util.StringUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -55,6 +59,7 @@ class SpringApplicationBuilderTests {
 	@AfterEach
 	void close() {
 		close(this.context);
+		SpringApplicationShutdownHookInstance.reset();
 	}
 
 	private void close(ApplicationContext context) {
@@ -132,7 +137,7 @@ class SpringApplicationBuilderTests {
 		application.parent(ExampleConfig.class);
 		this.context = application.run("foo.bar=baz");
 		verify(((SpyApplicationContext) this.context).getApplicationContext()).setParent(any(ApplicationContext.class));
-		assertThat(((SpyApplicationContext) this.context).getRegisteredShutdownHook()).isFalse();
+		assertThat(SpringApplicationShutdownHookInstance.get()).didNotRegisterApplicationContext(this.context);
 		assertThat(this.context.getParent().getBean(ApplicationArguments.class).getNonOptionArgs())
 				.contains("foo.bar=baz");
 		assertThat(this.context.getBean(ApplicationArguments.class).getNonOptionArgs()).contains("foo.bar=baz");
@@ -145,7 +150,7 @@ class SpringApplicationBuilderTests {
 		application.parent(ExampleConfig.class);
 		this.context = application.build("a=alpha").run("b=bravo");
 		verify(((SpyApplicationContext) this.context).getApplicationContext()).setParent(any(ApplicationContext.class));
-		assertThat(((SpyApplicationContext) this.context).getRegisteredShutdownHook()).isFalse();
+		assertThat(SpringApplicationShutdownHookInstance.get()).didNotRegisterApplicationContext(this.context);
 		assertThat(this.context.getParent().getBean(ApplicationArguments.class).getNonOptionArgs()).contains("a=alpha");
 		assertThat(this.context.getBean(ApplicationArguments.class).getNonOptionArgs()).contains("b=bravo");
 	}
@@ -158,7 +163,7 @@ class SpringApplicationBuilderTests {
 		application.parent(ExampleConfig.class);
 		this.context = application.run();
 		verify(((SpyApplicationContext) this.context).getApplicationContext()).setParent(any(ApplicationContext.class));
-		assertThat(((SpyApplicationContext) this.context).getRegisteredShutdownHook()).isTrue();
+		assertThat(SpringApplicationShutdownHookInstance.get()).registeredApplicationContext(this.context);
 	}
 
 	@Test
@@ -189,7 +194,7 @@ class SpringApplicationBuilderTests {
 		application.contextFactory(ApplicationContextFactory.ofContextClass(SpyApplicationContext.class));
 		this.context = application.run();
 		verify(((SpyApplicationContext) this.context).getApplicationContext()).setParent(any(ApplicationContext.class));
-		assertThat(((SpyApplicationContext) this.context).getRegisteredShutdownHook()).isFalse();
+		assertThat(SpringApplicationShutdownHookInstance.get()).didNotRegisterApplicationContext(this.context);
 	}
 
 	@Test
@@ -307,6 +312,22 @@ class SpringApplicationBuilderTests {
 		assertThat(builder.application().getEnvironmentPrefix()).isEqualTo("test");
 	}
 
+	@Test
+	void customApplicationWithResourceLoader() {
+		ResourceLoader resourceLoader = mock(ResourceLoader.class);
+		SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(resourceLoader,
+				ExampleConfig.class) {
+			@Override
+			protected SpringApplication createSpringApplication(ResourceLoader resourceLoader, Class<?>... sources) {
+				return new CustomSpringApplication(resourceLoader, sources);
+			}
+		};
+		SpringApplication application = applicationBuilder.build();
+		assertThat(application).isInstanceOf(CustomSpringApplication.class)
+				.asInstanceOf(InstanceOfAssertFactories.type(CustomSpringApplication.class))
+				.satisfies((customApp) -> assertThat(customApp.resourceLoader).isEqualTo(resourceLoader));
+	}
+
 	@Configuration(proxyBeanMethods = false)
 	static class ExampleConfig {
 
@@ -317,13 +338,22 @@ class SpringApplicationBuilderTests {
 
 	}
 
+	static class CustomSpringApplication extends SpringApplication {
+
+		private final ResourceLoader resourceLoader;
+
+		CustomSpringApplication(ResourceLoader resourceLoader, Class<?>... primarySources) {
+			super(resourceLoader, primarySources);
+			this.resourceLoader = resourceLoader;
+		}
+
+	}
+
 	static class SpyApplicationContext extends AnnotationConfigApplicationContext {
 
 		private final ConfigurableApplicationContext applicationContext = spy(new AnnotationConfigApplicationContext());
 
 		private ResourceLoader resourceLoader;
-
-		private boolean registeredShutdownHook;
 
 		@Override
 		public void setParent(ApplicationContext parent) {
@@ -342,16 +372,6 @@ class SpringApplicationBuilderTests {
 
 		ResourceLoader getResourceLoader() {
 			return this.resourceLoader;
-		}
-
-		@Override
-		public void registerShutdownHook() {
-			super.registerShutdownHook();
-			this.registeredShutdownHook = true;
-		}
-
-		boolean getRegisteredShutdownHook() {
-			return this.registeredShutdownHook;
 		}
 
 		@Override

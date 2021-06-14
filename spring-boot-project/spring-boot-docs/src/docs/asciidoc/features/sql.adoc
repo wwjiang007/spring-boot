@@ -243,7 +243,22 @@ For JPA components (such as converters) that are created as Spring beans, use `O
 ====
 
 TIP: We have barely scratched the surface of Spring Data JPA.
-For complete details, see the {spring-data-jdbc-docs}[Spring Data JPA reference documentation].
+For complete details, see the {spring-data-jpa-docs}[Spring Data JPA reference documentation].
+
+
+
+[[features.sql.jpa-and-spring-data.envers-repositories]]
+==== Spring Data Envers Repositories
+If {spring-data-envers}[Spring Data Envers] is available, JPA repositories are auto-configured to support typical Envers queries.
+
+To use Spring Data Envers, make sure your repository extends from `RevisionRepository` as show in the following example:
+
+[source,java,indent=0,subs="verbatim"]
+----
+include::{docs-java}/features/sql/jpaandspringdata/repositories/CountryRepository.java[]
+----
+
+NOTE: For more details, check the {spring-data-envers-doc}[Spring Data Envers reference documentation].
 
 
 

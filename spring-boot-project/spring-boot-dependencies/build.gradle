@@ -63,7 +63,7 @@ bom {
 			]
 		}
 	}
-	library("AppEngine SDK", "1.9.88") {
+	library("AppEngine SDK", "1.9.89") {
 		group("com.google.appengine") {
 			modules = [
 				"appengine-api-1.0-sdk"
@@ -215,7 +215,7 @@ bom {
 			]
 		}
 	}
-	library("Couchbase Client", "3.1.5") {
+	library("Couchbase Client", "3.1.6") {
 		group("com.couchbase.client") {
 			modules = [
 				"java-client"
@@ -247,7 +247,7 @@ bom {
 			]
 		}
 	}
-	library("Dropwizard Metrics", "4.1.21") {
+	library("Dropwizard Metrics", "4.1.22") {
 		group("io.dropwizard.metrics") {
 			imports = [
 				"metrics-bom"
@@ -261,7 +261,7 @@ bom {
 			]
 		}
 	}
-	library("Ehcache3", "3.9.3") {
+	library("Ehcache3", "3.9.4") {
 		group("org.ehcache") {
 			modules = [
 				"ehcache",
@@ -306,7 +306,7 @@ bom {
 			]
 		}
 	}
-	library("Flyway", "7.7.3") {
+	library("Flyway", "7.9.2") {
 		group("org.flywaydb") {
 			modules = [
 				"flyway-core"
@@ -323,7 +323,7 @@ bom {
 			]
 		}
 	}
-	library("Git Commit ID Plugin", "4.0.4") {
+	library("Git Commit ID Plugin", "4.0.5") {
 		group("pl.project13.maven") {
 			plugins = [
 				"git-commit-id-plugin"
@@ -364,7 +364,7 @@ bom {
 			]
 		}
 	}
-	library("Gson", "2.8.6") {
+	library("Gson", "2.8.7") {
 		group("com.google.code.gson") {
 			modules = [
 				"gson"
@@ -403,7 +403,7 @@ bom {
 			]
 		}
 	}
-	library("Hibernate", "5.4.31.Final") {
+	library("Hibernate", "5.4.32.Final") {
 		prohibit("[6.0.0.Alpha2,)") {
 			because "it uses the jakarta.* namespace"
 		}
@@ -513,7 +513,7 @@ bom {
 			]
 		}
 	}
-	library("Infinispan", "12.1.3.Final") {
+	library("Infinispan", "12.1.4.Final") {
 		group("org.infinispan") {
 			imports = [
 				"infinispan-bom"
@@ -821,7 +821,7 @@ bom {
 			]
 		}
 	}
-	library("JBoss Logging", "3.4.1.Final") {
+	library("JBoss Logging", "3.4.2.Final") {
 		group("org.jboss.logging") {
 			modules = [
 				"jboss-logging"
@@ -873,7 +873,7 @@ bom {
 			]
 		}
 	}
-	library("Jetty Reactive HTTPClient", "1.1.8") {
+	library("Jetty Reactive HTTPClient", "1.1.9") {
 		prohibit("[2,)") {
 			because "it uses the jakarta.* namespace"
 		}
@@ -883,7 +883,7 @@ bom {
 			]
 		}
 	}
-	library("Jetty", "9.4.41.v20210516") {
+	library("Jetty", "9.4.42.v20210604") {
 		prohibit("[11.0.0-alpha0,)") {
 			because "it uses the jakarta.* namespace"
 		}
@@ -900,7 +900,7 @@ bom {
 			]
 		}
 	}
-	library("Johnzon", "1.2.11") {
+	library("Johnzon", "1.2.13") {
 		group("org.apache.johnzon") {
 			modules = [
 				"johnzon-core",
@@ -923,7 +923,7 @@ bom {
 			]
 		}
 	}
-	library("jOOQ", "3.14.9") {
+	library("jOOQ", "3.14.11") {
 		group("org.jooq") {
 			modules = [
 				"jooq",
@@ -1262,7 +1262,7 @@ bom {
 			]
 		}
 	}
-	library("Neo4j Java Driver", "4.2.5") {
+	library("Neo4j Java Driver", "4.2.6") {
 		group("org.neo4j.driver") {
 			modules = [
 				"neo4j-java-driver"
@@ -1281,20 +1281,6 @@ bom {
 			modules = [
 				"netty-tcnative",
 				"netty-tcnative-boringssl-static"
-			]
-		}
-	}
-	library("OAuth2 OIDC SDK", "9.3.3") {
-		group("com.nimbusds") {
-			modules = [
-				"oauth2-oidc-sdk"
-			]
-		}
-	}
-	library("Nimbus JOSE JWT", "9.8.1") {
-		group("com.nimbusds") {
-			modules = [
-				"nimbus-jose-jwt"
 			]
 		}
 	}
@@ -1430,7 +1416,7 @@ bom {
 			]
 		}
 	}
-	library("RSocket", "1.1.0") {
+	library("RSocket", "1.1.1") {
 		group("io.rsocket") {
 			imports = [
 				"rsocket-bom"
@@ -1623,7 +1609,7 @@ bom {
 			]
 		}
 	}
-	library("Spring AMQP", "2.3.7") {
+	library("Spring AMQP", "2.3.8") {
 		group("org.springframework.amqp") {
 			modules = [
 				"spring-amqp",
@@ -1650,7 +1636,7 @@ bom {
 			]
 		}
 	}
-	library("Spring Framework", "5.3.7") {
+	library("Spring Framework", "5.3.8") {
 		group("org.springframework") {
 			imports = [
 				"spring-framework-bom"
@@ -1671,7 +1657,7 @@ bom {
 			]
 		}
 	}
-	library("Spring Kafka", "2.7.1") {
+	library("Spring Kafka", "2.7.2") {
 		group("org.springframework.kafka") {
 			modules = [
 				"spring-kafka",
@@ -1814,7 +1800,7 @@ bom {
 			]
 		}
 	}
-	library("Undertow", "2.2.7.Final") {
+	library("Undertow", "2.2.8.Final") {
 		group("io.undertow") {
 			modules = [
 				"undertow-core",

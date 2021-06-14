@@ -464,6 +464,8 @@ jobs:
     params:
       <<: *artifactory-repo-put-params
       repo: libs-staging-local
+    get_params:
+      threads: 8
   - put: git-repo
     params:
       repository: stage-git-repo
@@ -484,6 +486,8 @@ jobs:
     params:
       <<: *artifactory-repo-put-params
       repo: libs-staging-local
+    get_params:
+      threads: 8
   - put: git-repo
     params:
       repository: stage-git-repo
@@ -504,6 +508,8 @@ jobs:
     params:
       <<: *artifactory-repo-put-params
       repo: libs-staging-local
+    get_params:
+      threads: 8
   - put: git-repo
     params:
       repository: stage-git-repo
@@ -577,6 +583,7 @@ jobs:
     params:
       download_artifacts: true
       save_build_info: true
+      threads: 8
   - task: promote
     image: ci-image
     file: git-repo/ci/tasks/promote.yml
@@ -623,7 +630,7 @@ jobs:
         <<: *sdkman-task-params
         RELEASE_TYPE: RELEASE
         BRANCH: ((branch))
-        LATEST_GA: true
+        LATEST_GA: false
 - name: update-homebrew-tap
   serial: true
   plan:
@@ -639,7 +646,7 @@ jobs:
       image: ci-image
       file: git-repo/ci/tasks/update-homebrew-tap.yml
       params:
-        LATEST_GA: true
+        LATEST_GA: false
     - put: homebrew-tap-repo
       params:
         repository: updated-homebrew-tap-repo
