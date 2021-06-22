@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2019 the original author or authors.
+ * Copyright 2012-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 
-package org.springframework.boot.logging.log4j2;
+package smoketest.websocket.jetty10.snake;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.mock;
 
-/**
- * Tests for {@link SpringBootConfigurationFactory}.
- *
- * @author Andy Wilkinson
- */
-class SpringBootConfigurationFactoryTests {
+class SnakeTimerTests {
 
 	@Test
-	void producesConfigurationWithShutdownHookDisabled() throws IOException {
-		ConfigurationSource source = new ConfigurationSource(new ByteArrayInputStream(new byte[0]));
-		assertThat(new SpringBootConfigurationFactory().getConfiguration(new LoggerContext(""), source)
-				.isShutdownHookEnabled()).isFalse();
+	void removeDysfunctionalSnakes() throws Exception {
+		Snake snake = mock(Snake.class);
+		willThrow(new IOException()).given(snake).sendMessage(anyString());
+		SnakeTimer.addSnake(snake);
+
+		SnakeTimer.broadcast("");
+		assertThat(SnakeTimer.getSnakes()).hasSize(0);
 	}
 
 }

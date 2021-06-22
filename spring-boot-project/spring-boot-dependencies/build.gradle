@@ -520,6 +520,13 @@ bom {
 			]
 		}
 	}
+	library("InfluxDB Client Java", "2.3.0") {
+		group("com.influxdb") {
+			modules = [
+					"influxdb-client-java"
+			]
+		}
+	}
 	library("InfluxDB Java", "2.21") {
 		group("org.influxdb") {
 			modules = [
@@ -1396,7 +1403,7 @@ bom {
 			]
 		}
 	}
-	library("Reactor Bom", "2020.0.7") {
+	library("Reactor Bom", "2020.0.8") {
 		group("io.projectreactor") {
 			imports = [
 				"reactor-bom"
@@ -1695,7 +1702,7 @@ bom {
 			]
 		}
 	}
-	library("Spring Security", "5.5.0") {
+	library("Spring Security", "5.5.1") {
 		group("org.springframework.security") {
 			imports = [
 				"spring-security-bom"
